@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,11 @@ import java.util.concurrent.CountDownLatch;
  * El servidor arrenca, registra un shutdown hook i es queda a l'espera
  * fins que el procés rep un senyal de terminació (SIGINT, SIGTERM).
  *
+ * Assigna rols als clients segons l'ordre de connexió:
+ * - jugador1: primer client
+ * - jugador2: segon client
+ * - espectador: clients restants 
+ * 
  * Missatges suportats:
  *  - bounce: eco del missatge a l’emissor
  *  - broadcast: envia a tots excepte l’emissor
@@ -32,11 +38,6 @@ public class Main extends WebSocketServer {
 
     /** Port per defecte on escolta el servidor. */
     public static final int DEFAULT_PORT = 3000;
-
-    /** Llista de noms disponibles per als clients connectats. */
-    private static final List<String> CHARACTER_NAMES = Arrays.asList(
-        "Mario", "Luigi", "Peach", "Toad", "Bowser", "Wario", "Zelda", "Link"
-    );
 
     // Claus JSON
     private static final String K_TYPE = "type";
@@ -54,8 +55,13 @@ public class Main extends WebSocketServer {
     private static final String T_ERROR = "error";
     private static final String T_CONFIRMATION = "confirmation";
 
-    /** Registre de clients i assignació de noms (pool integrat). */
-    private final ClientRegistry clients;
+    // Clients registrats
+    private WebSocket jugador1 = null;
+    private WebSocket jugador2 = null;
+    private final List<WebSocket> espectadors = new ArrayList<>();
+
+    // Torn de partida
+    private int currentTurn = 1;
 
     /**
      * Crea un servidor WebSocket que escolta a l'adreça indicada.
@@ -64,7 +70,6 @@ public class Main extends WebSocketServer {
      */
     public Main(InetSocketAddress address) {
         super(address);
-        this.clients = new ClientRegistry(CHARACTER_NAMES);
     }
 
     // ----------------- Helpers JSON -----------------
@@ -102,8 +107,7 @@ public class Main extends WebSocketServer {
         try {
             to.send(payload);
         } catch (WebsocketNotConnectedException e) {
-            String name = clients.cleanupDisconnected(to);
-            System.out.println("Client desconnectat durant send: " + name);
+            System.out.println("Client desconnectat durant send: " + nameBySocket(to));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,47 +120,178 @@ public class Main extends WebSocketServer {
      * @param payload cadena JSON a enviar
      */
     private void broadcastExcept(WebSocket sender, String payload) {
-        for (Map.Entry<WebSocket, String> e : clients.snapshot().entrySet()) {
-            WebSocket conn = e.getKey();
+        for (WebSocket conn : getConnections()) {
             if (!Objects.equals(conn, sender)) sendSafe(conn, payload);
         }
+    }
+
+    /**
+     * Retorna un JSONArray amb els noms dels clients actualment connectats.
+     *
+     * @return llista de noms de clients
+     */
+    private JSONArray currentNames() {
+        JSONArray list = new JSONArray();
+        if (jugador1 != null) list.put("jugador1");
+        if (jugador2 != null) list.put("jugador2");
+        for (int i = 0; i < espectadors.size(); i++) {
+            list.put("espectador" + (i + 1));
+        }
+        return list;
     }
 
     /**
      * Envia la llista actualitzada de clients a tots els clients connectats.
      */
     private void sendClientsListToAll() {
-        JSONArray list = clients.currentNames();
-        for (Map.Entry<WebSocket, String> e : clients.snapshot().entrySet()) {
+        JSONArray list = currentNames();
+        for (WebSocket conn : getConnections()) {
             JSONObject rst = msg(T_CLIENTS);
-            put(rst, K_ID, e.getValue());
+            String name = nameBySocket(conn);
+            put(rst, K_ID, name);
             put(rst, K_LIST, list);
-            sendSafe(e.getKey(), rst.toString());
+            sendSafe(conn, rst.toString());
         }
     }
 
+    /**
+     * Retorna el nom associat a un socket, o null si no està registrat.
+     * @param conn
+     * @return
+     */
+    private String nameBySocket(WebSocket conn) {
+        if (conn == jugador1){
+            return "jugador1";
+        }
+        else if (conn == jugador2){
+            return "jugador2";
+        }
+        else{
+            int index = espectadors.indexOf(conn);
+            if (index != -1) {
+                return "espectador" + (index + 1);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Retorna el socket associat a un nom, o null si no està registrat.
+     * @param name
+     * @return
+     */
+    private WebSocket socketByName(String name) {
+        if (name.equals("jugador1")){
+            return jugador1;
+        }
+        else if (name.equals("jugador2")){
+            return jugador2;
+        }
+        else {
+            try {
+                int index = Integer.parseInt(name.substring(10)) - 1;
+                if (index >= 0 && index < espectadors.size()) {
+                    return espectadors.get(index);
+                }
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+
+
+
+
+
+
+
+
+
+    // BORRAR FUTURO
+    private void startTurnSimulation() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    // Espera 5 segundos antes de cambiar el turno
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+
+                // Alternar entre 1 y 2
+                currentTurn = (currentTurn == 1) ? 2 : 1;
+
+                JSONObject msg = new JSONObject()
+                    .put("type", "turn")
+                    .put("data", currentTurn);
+
+                broadcastToAll(msg.toString());
+            }
+        }).start();
+    }
+
+    private void broadcastToAll(String payload) {
+        for (WebSocket conn : getConnections()) {
+            sendSafe(conn, payload);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     // ----------------- WebSocketServer overrides -----------------
 
-    /** Assigna un nom al client i notifica la llista actualitzada. */
+    /** Assigna un rol al client. */
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        String name = clients.add(conn);
-        System.out.println("Client connectat: " + name);
+        if (jugador1 == null) {
+            jugador1 = conn;
+            sendSafe(conn, msg("role").put("value", "jugador1").toString());
+            System.out.println("Jugador 1 connectat.");
+        } else if (jugador2 == null) {
+            jugador2 = conn;
+            sendSafe(conn, msg("role").put("value", "jugador2").toString());
+            System.out.println("Jugador 2 connectat.");
+        } else {
+            espectadors.add(conn);
+            sendSafe(conn, msg("role").put("value", "espectador").toString());
+            
+            String spectatorName = "Espectador " + (espectadors.size());
+            System.out.println(spectatorName + " connectat.");
+        }
         sendClientsListToAll();
     }
 
-    /** Elimina el client del registre i notifica la llista actualitzada. */
+    /** Elimina el client del registre. */
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        String name = clients.remove(conn);
-        System.out.println("Client desconnectat: " + name);
+        if (conn.equals(jugador1)){
+            jugador1 = null;
+            System.out.println("Jugador 1 desconnectat.");
+        } else if (conn.equals(jugador2)){
+            jugador2 = null;
+            System.out.println("Jugador 2 desconnectat.");
+        } else if (espectadors.remove(conn)) {
+            System.out.println("Espectador desconnectat.");
+        }
         sendClientsListToAll();
     }
 
     /** Processa el missatge rebut i el ruteja segons el seu type. */
     @Override
     public void onMessage(WebSocket conn, String message) {
-        String origin = clients.nameBySocket(conn);
+        String origin = nameBySocket(conn);
         JSONObject obj;
         try {
             obj = new JSONObject(message);
@@ -167,6 +302,17 @@ public class Main extends WebSocketServer {
 
         String type = obj.optString(K_TYPE, "");
         switch (type) {
+            case "mousemove" -> {
+                // Reenvía a todos excepto al emisor
+                JSONObject msgOut = new JSONObject()
+                    .put("type", "mousemove")
+                    .put("x", obj.optDouble("x"))
+                    .put("y", obj.optDouble("y"))
+                    .put("origin", origin);
+
+                broadcastExcept(conn, msgOut.toString());
+            }
+
             case T_BOUNCE -> {
                 String txt = obj.optString(K_MESSAGE, "");
                 sendSafe(conn, msg(T_BOUNCE).put(K_MESSAGE, txt).toString());
@@ -182,7 +328,7 @@ public class Main extends WebSocketServer {
                     sendSafe(conn, msg(T_ERROR).put(K_MESSAGE, "Falta 'destination'").toString());
                     return;
                 }
-                WebSocket dest = clients.socketByName(destName);
+                WebSocket dest = socketByName(destName);
                 if (dest == null) {
                     sendSafe(conn, msg(T_ERROR).put(K_MESSAGE, "Client " + destName + " no disponible.").toString());
                     return;
@@ -212,6 +358,20 @@ public class Main extends WebSocketServer {
     public void onStart() {
         System.out.println("Servidor WebSocket engegat al port: " + getPort());
         setConnectionLostTimeout(100);
+
+
+
+
+
+
+
+
+
+
+
+
+        // BORRAR FUTURO
+        startTurnSimulation();
     }
 
     // ----------------- Lifecycle util -----------------

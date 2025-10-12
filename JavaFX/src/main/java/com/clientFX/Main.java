@@ -25,7 +25,7 @@ public class Main extends Application {
     public static String protocolWS = "ws";
 
     public static CtrlConfig ctrlConfig;
-    public static CtrlSockets ctrlSockets;
+    public static CtrlGameView ctrlGameView;
 
     public static void main(String[] args) {
 
@@ -41,10 +41,10 @@ public class Main extends Application {
 
         UtilsViews.parentContainer.setStyle("-fx-font: 14 arial;");
         UtilsViews.addView(getClass(), "ViewConfig", "/assets/viewConfig.fxml"); 
-        UtilsViews.addView(getClass(), "ViewSockets", "/assets/viewSockets.fxml");
+        UtilsViews.addView(getClass(), "GameView", "/assets/gameView.fxml");
 
         ctrlConfig = (CtrlConfig) UtilsViews.getController("ViewConfig");
-        ctrlSockets = (CtrlSockets) UtilsViews.getController("ViewSockets");
+        ctrlGameView = (CtrlGameView) UtilsViews.getController("GameView");
 
         Scene scene = new Scene(UtilsViews.parentContainer);
         
@@ -106,11 +106,11 @@ public class Main extends Application {
     private static void wsMessage(String response) {
         Platform.runLater(()->{ 
             // Fer aquí els canvis a la interficie
-            if (UtilsViews.getActiveView() != "ViewSockets") {
-                UtilsViews.setViewAnimating("ViewSockets");
+            if (UtilsViews.getActiveView() != "GameView") {
+                UtilsViews.setViewAnimating("GameView");
             }
             JSONObject msgObj = new JSONObject(response);
-            ctrlSockets.receiveMessage(msgObj);
+            ctrlGameView.receiveMessage(msgObj);
         });
     }
 

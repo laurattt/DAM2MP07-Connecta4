@@ -14,7 +14,6 @@
    <children>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: lightyellow;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Pane prefHeight="163.0" prefWidth="600.0" />
             <Label alignment="CENTER" prefHeight="178.0" prefWidth="600.0" text="CONNECTION SETUP" VBox.vgrow="NEVER">
                <font>
                   <Font size="36.0" />
@@ -135,7 +134,6 @@
                   <Insets bottom="16.0" top="16.0" />
                </VBox.margin>
             </Label>
-            <Pane prefHeight="142.0" prefWidth="600.0" VBox.vgrow="ALWAYS" />
             <HBox alignment="BOTTOM_LEFT" prefHeight="75.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#setConfigLocal" text="Local">
