@@ -1,0 +1,9 @@
+com/project/Main.class
+com/project/ControllerTablero.class
+com/project/AnimacionFichas.class
+com/shared/GameObject.class
+com/shared/ClientData.class
+com/project/CtrlListaJugadores.class
+com/project/CtrlConfig.class
+com/project/UtilsViews.class
+com/project/CtrlWait.class
