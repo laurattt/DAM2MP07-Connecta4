@@ -145,24 +145,23 @@ public class ControllerTablero implements Initializable {
         }
     }
 
-    private void tryDropInColumn(int columna) { // CAMBIOS EN ESTE MÉTODO ------------------------------------------
+    private void tryDropInColumn(int columna) { 
         if (partidaTerminada || animating) return;
+            int filaDisponible = findLowestEmptyRow(columna);
+            if (filaDisponible < 0) return; // columna llena
 
-        int filaDisponible = findLowestEmptyRow(columna);
-        if (filaDisponible < 0) return; // columna llena
+            // config caída
+                double celdaCentroYSuperior = boardY + cell * 0.5;
+                double posicionInicialY = boardY - cell * 0.5;
+                double posicionFinalY = celdaCentroYSuperior + filaDisponible * cell;
 
-        // Configura animación de caída
-        double celdaCentroYSuperior = boardY + cell * 0.5;
-        double posicionInicialY = boardY - cell * 0.5;
-        double posicionFinalY = celdaCentroYSuperior + filaDisponible * cell;
-
-        animCol = columna;
-        animRow = filaDisponible;
-        animY = posicionInicialY;
-        targetY = posicionFinalY;
-        animating = true;
-    lastRunNanos = 0;
-}
+                animCol = columna;
+                animRow = filaDisponible;
+                animY = posicionInicialY;
+                targetY = posicionFinalY;
+                animating = true;
+            lastRunNanos = 0;
+        }
 
 
     private int findLowestEmptyRow(int col) {
@@ -173,7 +172,7 @@ public class ControllerTablero implements Initializable {
     }
 
     // --- Bucle lògic (cridat per CnvTimer.runFunction)
-    private void update() {
+    private void update() { // CAMBIOS AQUIIIIIIIIIIIIIIIIIIIIIIIIIII ----------------
         // Calculem dt (segons) dins del controlador
         long now = System.nanoTime();
         double dt;
@@ -190,13 +189,13 @@ public class ControllerTablero implements Initializable {
                 animY = targetY;
                 animating = false;
                 // Col·loca la fitxa al tauler
-                if (animRow >= 0 && animCol >= 0) { // AQUI SE CAMBIARON COSAS ------------------------------
+                if (animRow >= 0 && animCol >= 0) { // AQUI SE AGREGARON COSAS ------------------------------
                     board[animRow][animCol] = jugadorActual;
 
-                    // Comprobar si hay ganador
+                    // comprobar si hay ganador
                     if (comprobarVictoria(animRow, animCol, jugadorActual)) {
                         partidaTerminada = true;
-                        System.out.println("¡El jugador " + (jugadorActual == 1 ? "ROJO" : "AZUL") + " ha ganado!");
+                        System.out.println("El jugador " + (jugadorActual == 1 ? "ROJO" : "AZUL") + " ha ganado");
                     } else if (tableroLleno()) {
                         partidaTerminada = true;
                         System.out.println("¡Empate!");
@@ -210,19 +209,19 @@ public class ControllerTablero implements Initializable {
         }
     }
 
-    // Comprueba si el jugador ha hecho cuatro en raya
+    // LÓGICA PARA LAS VICTORIAS 
     private boolean comprobarVictoria(int fila, int columna, int jugador) {
-        return (contarEnLinea(fila, columna, 1, 0, jugador) >= 4 ||   // Horizontal
-                contarEnLinea(fila, columna, 0, 1, jugador) >= 4 ||   // Vertical
-                contarEnLinea(fila, columna, 1, 1, jugador) >= 4 ||   // Diagonal principal
-                contarEnLinea(fila, columna, 1, -1, jugador) >= 4);   // Diagonal inversa
+        return (contarEnLinea(fila, columna, 1, 0, jugador) >= 4 ||   // horizontal
+                contarEnLinea(fila, columna, 0, 1, jugador) >= 4 ||   // vertical
+                contarEnLinea(fila, columna, 1, 1, jugador) >= 4 ||   // diagonal principal
+                contarEnLinea(fila, columna, 1, -1, jugador) >= 4);   // diagonal inversa
     }
 
-    // Cuenta fichas consecutivas en una dirección
+    // cuenta fichas consecutivas en una dirección 
     private int contarEnLinea(int fila, int columna, int deltaFila, int deltaColumna, int jugador) {
         int contador = 1;
 
-        // Dirección positiva
+        // dirección positiva
         int f = fila + deltaFila;
         int c = columna + deltaColumna;
         while (f >= 0 && f < ROWS && c >= 0 && c < COLS && board[f][c] == jugador) {
@@ -231,7 +230,7 @@ public class ControllerTablero implements Initializable {
             c += deltaColumna;
         }
 
-        // Dirección negativa
+        // dirección negativa
         f = fila - deltaFila;
         c = columna - deltaColumna;
         while (f >= 0 && f < ROWS && c >= 0 && c < COLS && board[f][c] == jugador) {
@@ -243,7 +242,7 @@ public class ControllerTablero implements Initializable {
         return contador;
     }
 
-    // Comprueba si el tablero está lleno
+    // comprueba si el tablero está lleno
     private boolean tableroLleno() {
         for (int c = 0; c < COLS; c++) {
             if (board[0][c] == 0) return false;
@@ -311,39 +310,38 @@ public class ControllerTablero implements Initializable {
         }
     }
 
-    private void drawDiscsFromBoard() { // CAMBIOS AQUIIIIIIIIIIIIIIIIIIIII
+    private void drawDiscsFromBoard() { // CAMBIOS AQUIIIIIIIIIIIIIIIIIIIII ----------------------------------
         double radioFicha = cell * 0.42;
 
         for (int fila = 0; fila < ROWS; fila++) {
             for (int columna = 0; columna < COLS; columna++) {
                 int valorCelda = board[fila][columna];
-                if (valorCelda == 0) continue; // celda vacía, no dibujar nada
+                    if (valorCelda == 0) continue; // celda vacía --> no dibujar nada
 
-                double centroX = boardX + columna * cell + cell * 0.5;
-                double centroY = boardY + fila * cell + cell * 0.5;
+                    double centroX = boardX + columna * cell + cell * 0.5;
+                    double centroY = boardY + fila * cell + cell * 0.5;
 
-                // Color según el jugador
-                if (valorCelda == 1) {
-                    gc.setFill(Color.RED);   // Jugador 1 (rojo)
-                } else if (valorCelda == 2) {
-                    gc.setFill(Color.BLUE);  // Jugador 2 (azul)
+                    if (valorCelda == 1) {
+                        gc.setFill(Color.RED);   // jugador 1 (rojo)
+                    } else if (valorCelda == 2) {
+                        gc.setFill(Color.BLUE);  // jugador 2 (azul)
+                    }
+
+                    gc.fillOval(centroX - radioFicha, centroY - radioFicha, radioFicha * 2, radioFicha * 2);
                 }
-
-                gc.fillOval(centroX - radioFicha, centroY - radioFicha, radioFicha * 2, radioFicha * 2);
             }
-        }
     }
 
 
-    private void drawFallingDisc() { // CAMBIOS AQUIIIIIIIIIIIIIIIIIIIII
+    private void drawFallingDisc() { // CAMBIOS AQUIIIIIIIIIIIIIIIIIIIII -------------------------------------------
         if (animCol < 0) return; // No hay ficha en animación
 
         double radioFicha = cell * 0.42;
         double centroX = boardX + animCol * cell + cell * 0.5;
         double centroY = animY;
 
-        // Color según el turno del jugador
-        gc.setFill(jugadorActual == 1 ? Color.RED : Color.BLUE);
+        // color según el turno del jugador
+        gc.setFill(jugadorActual == 1 ? Color.RED : Color.BLUE); // si jugador = 1 color rojo, si no azul 
 
         gc.fillOval(centroX - radioFicha, centroY - radioFicha, radioFicha * 2, radioFicha * 2);
     }
