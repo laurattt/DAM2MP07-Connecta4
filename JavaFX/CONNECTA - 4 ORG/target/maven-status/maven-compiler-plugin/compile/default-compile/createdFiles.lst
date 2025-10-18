@@ -6,4 +6,3 @@ com/shared/ClientData.class
 com/project/CtrlListaJugadores.class
 com/project/CtrlConfig.class
 com/project/UtilsViews.class
-com/project/CtrlWait.class

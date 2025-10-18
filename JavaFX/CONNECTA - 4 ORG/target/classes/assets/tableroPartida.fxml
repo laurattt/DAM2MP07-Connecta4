@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane prefHeight="900.0" prefWidth="1154.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.project.ControllerTablero">
+
+    <!-- player1 -->
+    <left>
+        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 25;">
+            <StackPane prefHeight="400" prefWidth="100.0" style="-fx-border-color: red; -fx-border-width: 3; -fx-background-color: #ffeeee;">
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="371.0" prefWidth="34.0" spacing="20">
+                     <children>
+                        <Circle fx:id="rojo1" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="rojo2" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="rojo3" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="rojo4" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="rojo5" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="rojo6" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="rojo7" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="rojo8" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="rojo9" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="rojo10" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="rojo11" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     </children>
+                  </VBox>
+                      <VBox alignment="CENTER" prefHeight="666.0" prefWidth="85.0" spacing="20.0">
+                     <Circle fx:id="rojo12" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="rojo13" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="rojo14" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="rojo15" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="rojo16" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="rojo17" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="rojo18" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="rojo19" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="rojo20" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="rojo21" fill="RED" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                      </VBox>
+               </children>
+               <StackPane.margin>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </StackPane.margin>
+            </HBox>
+            <VBox.margin>
+               <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+            </VBox.margin>
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+            </StackPane>
+         <Label text="PR1" textAlignment="CENTER" />
+        </VBox>
+    </left>
+
+    <!-- tablero -->
+    <center>
+        <Canvas fx:id="canvas" />
+    </center>
+
+    <!-- player2 -->
+    <right>
+        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 25;">
+            <StackPane prefHeight="400" prefWidth="100" style="-fx-border-color: blue; -fx-border-width: 3; -fx-background-color: #eeeeff;">
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+               <children>
+                      <VBox alignment="CENTER" spacing="20">
+                     <Circle fx:id="azul1" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul2" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul3" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul4" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul5" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul6" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul7" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul8" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul9" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul10" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                      </VBox>
+                  <VBox alignment="CENTER" prefHeight="640.0" prefWidth="56.0" spacing="20">
+                     <children>
+                        <Circle fx:id="azul11" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul12" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul13" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul14" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul15" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul16" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul17" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul18" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul19" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul20" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul21" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     </children>
+                  </VBox>
+               </children>
+               <StackPane.margin>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </StackPane.margin>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
+            </StackPane>
+         <Label text="PR2" textAlignment="CENTER" />
+        </VBox>
+    </right>
+   <bottom>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="569.0">
+               <children>
+                      <Button fx:id="buttonAdd" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#actionAdd" prefHeight="35" prefWidth="120" text="Add Random" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="601.0" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="601.0">
+               <children>
+                  <Button fx:id="buttonClear" contentDisplay="CENTER" onAction="#actionClear" prefHeight="35" prefWidth="120" text="Clear Board" />
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+   </bottom>
+
+</BorderPane>
