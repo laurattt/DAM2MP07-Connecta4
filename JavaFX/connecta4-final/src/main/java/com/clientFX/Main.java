@@ -26,6 +26,8 @@ public class Main extends Application {
 
     public static CtrlConfig ctrlConfig;
     public static CtrlSockets ctrlSockets;
+    public static CtrlGame ctrlGame;
+
 
     public static void main(String[] args) {
 
@@ -42,15 +44,19 @@ public class Main extends Application {
         UtilsViews.parentContainer.setStyle("-fx-font: 14 arial;");
         UtilsViews.addView(getClass(), "ViewConfig", "/assets/viewConfig.fxml"); 
         UtilsViews.addView(getClass(), "ViewSockets", "/assets/viewSockets.fxml");
+        UtilsViews.addView(getClass(), "ViewGame", "/assets/viewGame.fxml");
+
 
         ctrlConfig = (CtrlConfig) UtilsViews.getController("ViewConfig");
         ctrlSockets = (CtrlSockets) UtilsViews.getController("ViewSockets");
+        ctrlGame = (CtrlGame) UtilsViews.getController("ViewGame");
 
         Scene scene = new Scene(UtilsViews.parentContainer);
         
+        UtilsViews.setStage(stage);
         stage.setScene(scene);
         stage.onCloseRequestProperty(); // Call close method when closing window
-        stage.setTitle("JavaFX - NodeJS");
+        stage.setTitle("Connecta4-MonicaD-LauraT");
         stage.setMinWidth(windowWidth);
         stage.setMinHeight(windowHeight);
         stage.show();
@@ -60,6 +66,7 @@ public class Main extends Application {
             Image icon = new Image("file:/icons/icon.png");
             stage.getIcons().add(icon);
         }
+    
     }
 
 

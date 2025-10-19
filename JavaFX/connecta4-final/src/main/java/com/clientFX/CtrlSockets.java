@@ -8,12 +8,14 @@ import java.util.ResourceBundle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class CtrlSockets implements Initializable {
 
@@ -159,4 +161,17 @@ public class CtrlSockets implements Initializable {
     private String getCurrentTime() {
         return java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
     }
+
+    // Vista para tablero
+    @FXML
+    public void vistaTablero (ActionEvent event){
+        UtilsViews.setViewAnimating("ViewGame");
+
+        Stage stage = UtilsViews.getStage();
+        stage.setWidth(1400);
+        stage.setHeight(900); //despues se ajusta para ver mejor el tablero zzz
+
+        stage.centerOnScreen();
+    }
+
 }

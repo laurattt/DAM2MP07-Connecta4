@@ -1,4 +1,4 @@
-package com.project;
+package com.clientFX;
 
 import java.util.ArrayList;
 
@@ -11,12 +11,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class UtilsViews {
 
     public static StackPane parentContainer = new StackPane();
     public static ArrayList<Object> controllers = new ArrayList<>();
+    private static Stage primaryStage;
+    
+    // Método simple para guardar el Stage
+    public static void setStage(Stage stage) {
+        primaryStage = stage;
+    }
+    
+    // Método simple para obtener el Stage
+    public static Stage getStage() {
+        return primaryStage;
+    }
 
     // Add one view to the list
     public static void addView(Class<?> cls, String name, String path) throws Exception {
@@ -176,4 +188,6 @@ public class UtilsViews {
         // Remove focus from buttons
         parentContainer.requestFocus();
     }
+
+    
 }

@@ -1,4 +1,4 @@
-package com.project;
+package com.clientFX;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class ControllerTablero implements Initializable {
+public class CtrlGame implements Initializable {
 
     @FXML private Canvas canvas;
     @FXML private Button buttonAdd;
@@ -60,6 +60,7 @@ public class ControllerTablero implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         gc = canvas.getGraphicsContext2D();
 
         setFixedCanvasSize();
