@@ -244,7 +244,7 @@ public class Main extends WebSocketServer {
     }
 
     public static void main(String[] args) {
-        Main server = new Main(new InetSocketAddress(DEFAULT_PORT));
+        Main server = new Main(new InetSocketAddress("0.0.0.0", DEFAULT_PORT));
         server.start();
         registerShutdownHook(server);
 
