@@ -82,15 +82,19 @@ public class Main extends WebSocketServer {
     /**
      * Envia la llista actualitzada de clients a tots els clients connectats.
      */
-    private void sendClientsListToAll() {
-        JSONArray list = clients.currentNames();
-        for (Map.Entry<WebSocket, String> e : clients.snapshot().entrySet()) {
-            JSONObject rst = msg(T_CLIENTS);
-            put(rst, K_ID, e.getValue()); // ID único del cliente
-            put(rst, K_LIST, list);
-            sendSafe(e.getKey(), rst.toString());
-        }
+   private void sendClientsListToAll() {
+    JSONArray list = clients.currentNames();
+    System.out.println("Enviando lista de clientes a todos: " + list.toString());
+    
+    for (Map.Entry<WebSocket, String> e : clients.snapshot().entrySet()) {
+        JSONObject rst = msg(T_CLIENTS);
+        put(rst, K_ID, e.getValue());
+        put(rst, K_LIST, list);
+        String payload = rst.toString();
+        System.out.println("Enviando a " + e.getValue() + ": " + payload);
+        sendSafe(e.getKey(), payload);
     }
+}
 
     // ----------------- WebSocketServer overrides -----------------
 

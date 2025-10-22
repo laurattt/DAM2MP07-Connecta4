@@ -27,11 +27,21 @@ final class ClientRegistry {
     /**
      * Añade un nuevo cliente con su nombre
      */
-    String add(WebSocket socket, String userName) {
-        bySocket.put(socket, userName);
-        byName.put(userName, socket);
-        return userName; // Devuelve el mismo nombre que recibió
+   String add(WebSocket socket, String userName) {
+    System.out.println("Registrando cliente: " + userName + " - Socket: " + socket.getRemoteSocketAddress());
+    
+    // Verifica si el nombre ya existe
+    if (isNameTaken(userName)) {
+        System.out.println("Nombre ya en uso: " + userName);
+        return null;
     }
+    
+    bySocket.put(socket, userName);
+    byName.put(userName, socket);
+    
+    System.out.println("Clientes registrados: " + byName.keySet());
+    return userName;
+}
 
     /**
      * Verifica si un nombre ya está en uso

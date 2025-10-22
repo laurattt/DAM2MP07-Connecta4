@@ -82,7 +82,7 @@
             <version>1.5.3</version>
         </dependency>
         
-        <!-- Dependencia para JSON (versión corregida) -->
+        <!-- Dependencia para JSON  -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>

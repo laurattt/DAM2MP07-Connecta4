@@ -99,22 +99,22 @@ public class CtrlSockets implements Initializable {
 
     // Main wsClient calls this method when receiving a message
     public void receiveMessage(JSONObject messageObj) {
-        System.out.println("Receive WebSocket: " + messageObj.toString());
+        //System.out.println("Receive WebSocket: " + messageObj.toString());
+        System.out.println("MENSAJE RECIBIDO: " + messageObj.toString(2)); // Pretty print
+    
         String type = messageObj.getString("type");
+        System.out.println("Tipo de mensaje: " + type);
 
         if (type.equals("clients")) {
             JSONArray JSONlist = messageObj.getJSONArray("list");
-            currentUserName = messageObj.getString("id"); // Esto ahora es solo el nombre
+            currentUserName = messageObj.getString("id");
             
-            // Actualizar lista de usuarios conectados
-            connectedUsers.clear();
-            for (int i = 0; i < JSONlist.length(); i++) {
-                connectedUsers.add(JSONlist.getString(i));
-            }
-            
-            // Mostrar  el nombre
-            txtId.setText(currentUserName);
-            updateUserChoiceBox();
+            System.out.println("Mi nombre: " + currentUserName);
+            System.out.println("Lista de usuarios: " + JSONlist.toString());
+                
+                // Mostrar  el nombre
+                txtId.setText(currentUserName);
+                updateUserChoiceBox();
             
         } else if (type.equals("bounce")) {
             String message = messageObj.getString("message");
