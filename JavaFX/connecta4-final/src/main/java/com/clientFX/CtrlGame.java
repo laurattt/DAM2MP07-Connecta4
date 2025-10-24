@@ -1,5 +1,7 @@
 package com.clientFX;
 
+import com.shared.ClientData;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,6 +18,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class CtrlGame implements Initializable {
 
@@ -56,7 +61,10 @@ public class CtrlGame implements Initializable {
     private List<Circle> fichasRojas = new ArrayList<>();
     private List<Circle> fichasAzules = new ArrayList<>();
     
-
+    //variables estado juego
+    private JSONObject currentGameState;
+    private List<ClientData> gameClients = new ArrayList<>();
+    private String myRole;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -120,26 +128,38 @@ public class CtrlGame implements Initializable {
     // fichas arrastre 
     @FXML
     private void iniciarArrastreFicha(MouseEvent event) {
-        if (partidaTerminada || animating) {
-            System.out.println("No se puede arrastrar - Partida terminada ");
+        if (partidaTerminada || animating || !isMyTurn()) {
+            System.out.println("No se puede arrastrar - Partida terminada o Turno Oponente");
             return;
+        }
+
+        if (myRole == null) {
+            System.out.println("myRole no está inicializado");
         }
         
         fichaArrastrada = (Circle) event.getSource();
         Color colorFicha = (Color) fichaArrastrada.getFill();
         
-        // turno verificacion
-        boolean turnoCorrecto = (jugadorActual == 1 && colorFicha.equals(Color.RED)) || 
-                               (jugadorActual == 2 && colorFicha.equals(Color.BLUE));
+        // Verificar que la ficha corresponde al color del jugador actual
+        boolean fichaCorrecta = false;
         
-        if (turnoCorrecto) {
-            //getScene da posicion del ratón (horizontal-vertical)
+        if (myRole.equals("R") && colorFicha.equals(Color.RED)) {
+            fichaCorrecta = true;
+        } else if (myRole.equals("Y") && colorFicha.equals(Color.YELLOW)) {
+            fichaCorrecta = true;
+        }
+        
+        if (fichaCorrecta) {
             offsetX = event.getSceneX(); 
             offsetY = event.getSceneY();
-            //System.out.println("arrastro la ficha: " + jugadorActual);
+            
+            // Enviar clientMouseMoving
+            sendMouseMoving(event.getSceneX(), event.getSceneY());
+            
+            System.out.println("Arrastrando ficha: " + myRole);
         } else {
             fichaArrastrada = null;
-            System.out.println("Respeta el turno");
+            System.out.println("No puedes arrastrar fichas del oponente - Tu color: " + myRole);
         }
     }
 
@@ -151,13 +171,14 @@ public class CtrlGame implements Initializable {
         fichaArrastrada.setTranslateX(event.getSceneX() - offsetX);
         fichaArrastrada.setTranslateY(event.getSceneY() - offsetY);
         
-        // redibujar para actualizar posicioj
-        redraw();
+        // Enviar clientMouseMoving i clientPieceMoving
+        sendMouseMoving(event.getSceneX(), event.getSceneY());
+        sendPieceMoving();
     }
 
     @FXML
     private void soltarFicha(MouseEvent event) {
-        if (fichaArrastrada == null) return;
+        if (fichaArrastrada == null || !isMyTurn()) return;
 
         try {
             // calcula columna basada en la posición del mouse
@@ -172,7 +193,9 @@ public class CtrlGame implements Initializable {
             
             if (col >= 0 && col < COLS) {
                 fichaArrastrada.setVisible(false); // hace invisible la ficha una vez hay arrastre
-                tryDropInColumn(col);
+                
+                // Enviar clientPlay
+                sendClientPlay(col);
             } else {
                 System.out.println("Columna inválida: " + col);
                 fichaArrastrada.setVisible(true); // regresa a donde estaba la ficha si la columna no es valida
@@ -189,6 +212,149 @@ public class CtrlGame implements Initializable {
         fichaArrastrada.setTranslateY(0);
         fichaArrastrada = null;
     }
+
+    // Enviar missatges al servidor
+    private void sendMouseMoving(double mouseX, double mouseY) {
+        if (Main.wsClient != null) {
+            JSONObject mouseData = new JSONObject();
+            mouseData.put("mouseX", (int)mouseX);
+            mouseData.put("mouseY", (int)mouseY);
+            
+            JSONObject msg = new JSONObject();
+            msg.put("type", "clientMouseMoving");
+            msg.put("value", mouseData);
+            
+            Main.wsClient.safeSend(msg.toString());
+        }
+    }
+
+    private void sendPieceMoving() {
+        if (Main.wsClient != null && fichaArrastrada != null) {
+            // Calcular posición de la ficha que se está arrastrando
+            JSONObject pieceData = new JSONObject();
+            pieceData.put("id", "dragging_" + myRole);
+            pieceData.put("x", (int)fichaArrastrada.getTranslateX());
+            pieceData.put("y", (int)fichaArrastrada.getTranslateY());
+            
+            JSONObject msg = new JSONObject();
+            msg.put("type", "clientPieceMoving");
+            msg.put("value", pieceData);
+            
+            Main.wsClient.safeSend(msg.toString());
+        }
+    }
+
+    private void sendClientPlay(int column) {
+        if (Main.wsClient != null) {
+            JSONObject playData = new JSONObject();
+            playData.put("column", column);
+            
+            JSONObject msg = new JSONObject();
+            msg.put("type", "clientPlay");
+            msg.put("value", playData);
+            
+            Main.wsClient.safeSend(msg.toString());
+        }
+    }
+
+    // Método para verificar si es mi turno
+    private boolean isMyTurn() {
+        if (currentGameState == null) return false;
+        
+        JSONObject game = currentGameState.optJSONObject("game");
+        if (game == null) return false;
+        
+        String turnPlayer = game.optString("turn", "");
+        String myName = Main.ctrlConfig.txtName.getText();
+        
+        return turnPlayer.equals(myName) && 
+            "playing".equals(game.optString("status", ""));
+    }
+
+    // Método para recibir serverData del servidor
+    public void receiveServerData(JSONObject serverData) {
+        Platform.runLater(() -> {
+            this.currentGameState = serverData;
+            
+            // Actualizar lista de clientes
+            JSONArray clientsList = serverData.optJSONArray("clientsList");
+            updateClientsList(clientsList);
+            
+            // Actualizar estado del juego
+            JSONObject game = serverData.optJSONObject("game");
+            updateGameState(game);
+            
+            // Redibujar
+            redraw();
+        });
+    }
+
+    private void updateClientsList(JSONArray clientsList) {
+        gameClients.clear();
+        if (clientsList != null) {
+            for (int i = 0; i < clientsList.length(); i++) {
+                JSONObject clientObj = clientsList.getJSONObject(i);
+                ClientData client = ClientData.fromJSON(clientObj);
+                gameClients.add(client);
+                
+                // Determinar mi rol
+                if (client.name.equals(Main.ctrlConfig.txtName.getText())) {
+                    myRole = clientObj.optString("role", "");
+                }
+            }
+        }
+    }
+
+    private void updateGameState(JSONObject game) {
+        if (game == null) return;
+        
+        String status = game.optString("status", "waiting");
+        String turnPlayer = game.optString("turn", "");
+        
+        // Actualizar interfaz según el estado
+        switch (status) {
+            case "waiting":
+                // Mostrar esperando jugadores
+                break;
+            case "countdown":
+                // Mostrar cuenta atrás
+                break;
+            case "playing":
+                // Juego activo
+                updateBoard(game.optJSONArray("board"));
+                break;
+            case "win":
+            case "draw":
+                // Juego terminado
+                partidaTerminada = true;
+                break;
+        }
+    }
+
+    private void updateBoard(JSONArray boardArray) {
+        if (boardArray == null) return;
+        
+        // Limpiar tablero local
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                board[i][j] = 0;
+            }
+        }
+    
+        // Actualizar con datos del servidor
+        for (int row = 0; row < boardArray.length(); row++) {
+            JSONArray rowArray = boardArray.getJSONArray(row);
+            for (int col = 0; col < rowArray.length(); col++) {
+                String cell = rowArray.getString(col);
+                if ("R".equals(cell)) {
+                    board[row][col] = 1; // 1 = Vermell
+                } else if ("Y".equals(cell)) {
+                    board[row][col] = 2; // 2 = Groc
+                }
+            }
+        }
+    } 
+
 
     private void inicializarListasFichas() {
         try {
@@ -452,6 +618,12 @@ public class CtrlGame implements Initializable {
         if (animating) {
             drawFallingDisc();
         }
+
+        // Dibuixar ratolí dels altres jugadors
+        drawOtherPlayerMouse();
+
+        // Dibuixar informació del lloc
+        drawGameInfo();
     }
 
     private void drawHeader() {
@@ -503,7 +675,7 @@ public class CtrlGame implements Initializable {
                     if (valorCelda == 1) {
                         gc.setFill(Color.RED);
                     } else if (valorCelda == 2) {
-                        gc.setFill(Color.BLUE);
+                        gc.setFill(Color.YELLOW);
                     }
                     gc.fillOval(centroX - radioFicha, centroY - radioFicha, radioFicha * 2, radioFicha * 2);
                 }
@@ -537,7 +709,46 @@ public class CtrlGame implements Initializable {
         double centroY = animY;
 
         // dibuja ficha que está encima del todo 
-        gc.setFill(jugadorActual == 1 ? Color.RED : Color.BLUE);
+        gc.setFill(jugadorActual == 1 ? Color.RED : Color.YELLOW);
         gc.fillOval(centroX - radioFicha, centroY - radioFicha, radioFicha * 2, radioFicha * 2);
     }
+
+    private void drawOtherPlayerMouse() {
+        for (ClientData client : gameClients) {
+            if (!client.name.equals(Main.ctrlConfig.txtName.getText())) {
+                // Dibujar cursor del oponente
+                gc.setFill(getColor(client.color));
+                gc.fillOval(client.mouseX - 5, client.mouseY - 5, 10, 10);
+            }
+        }
+    }
+
+    private Color getColor(String colorName) {
+        switch (colorName.toUpperCase()) {
+            case "RED": return Color.RED;
+            case "YELLOW": return Color.YELLOW;
+            case "BLUE": return Color.BLUE;
+            case "GREEN": return Color.GREEN;
+            case "GRAY": return Color.GRAY;
+            default: return Color.LIGHTGRAY;
+        }
+    }
+
+    private void drawGameInfo() {
+        if (currentGameState == null) return;
+        
+        JSONObject game = currentGameState.optJSONObject("game");
+        if (game == null) return;
+        
+        String status = game.optString("status", "");
+        String turnPlayer = game.optString("turn", "");
+        String myName = Main.ctrlConfig.txtName.getText();
+        
+        gc.setFill(Color.BLACK);
+        gc.fillText("Estado: " + status, 10, 20);
+        gc.fillText("Turno: " + turnPlayer, 10, 40);
+        gc.fillText("Eres: " + myRole, 10, 60);
+        gc.fillText("Mi turno: " + (isMyTurn() ? "SÍ" : "NO"), 10, 80);
+    }
+
 } 

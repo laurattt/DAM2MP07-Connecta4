@@ -45,7 +45,7 @@ public class Main extends Application {
         UtilsViews.addView(getClass(), "ViewConfig", "/assets/viewConfig.fxml"); 
         UtilsViews.addView(getClass(), "ViewSockets", "/assets/viewSockets.fxml");
         UtilsViews.addView(getClass(), "ViewGame", "/assets/viewGame.fxml");
-
+        // Añadir la vista de la cuenta atrás
 
         ctrlConfig = (CtrlConfig) UtilsViews.getController("ViewConfig");
         ctrlSockets = (CtrlSockets) UtilsViews.getController("ViewSockets");
@@ -140,14 +140,88 @@ public class Main extends Application {
     }
         
     private static void wsMessage(String response) {
+        
         Platform.runLater(()->{ 
-            // Fer aquí els canvis a la interficie
-            if (UtilsViews.getActiveView() != "ViewSockets") {
-                UtilsViews.setViewAnimating("ViewSockets");
-            }
             JSONObject msgObj = new JSONObject(response);
-            ctrlSockets.receiveMessage(msgObj);
+            String type = msgObj.optString("type","");
+
+            switch (type) {
+                case "serverData" -> {
+                    ctrlGame.receiveServerData(msgObj);
+
+
+
+
+// --------------------------------------------------------------------------------------------------------
+                    // REVISAR
+
+                    // Por ahora cuando acaba el juego cambiamos otra vez al chat, CAMBIAR A VISTA GANADORES
+
+                    JSONObject game = msgObj.optJSONObject("game");
+                    if (game != null) {
+                        String status = game.optString("status", "");
+                        if ("win".equals(status) || "draw".equals(status)) {
+                            // Después de un tiempo, volver al chat
+                            pauseDuring(5000, () -> {
+                                if (!"ViewSockets".equals(UtilsViews.getActiveView())) {
+                                    UtilsViews.setViewAnimating("ViewSockets");
+                                }
+                            });
+                        }
+                    }
+
+
+
+
+
+// --------------------------------------------------------------------------------------------------------
+
+                    break;
+                }
+                case "countdown" -> {
+                    int countdownValue = msgObj.optInt("value",0);
+                    handleCountdown(countdownValue);
+                    break;
+                }
+                default -> {
+
+
+
+// --------------------------------------------------------------------------------------------------------
+                    // REVISAR
+
+
+                    // Només estarem a la vista del xat per rebre missatges si no estem a ViewGame
+                    // Afegir que no canviï si està a les vistes d'espera o countdown
+                    String activeView = UtilsViews.getActiveView();
+                    if (!"ViewGame".equals(activeView) && !"ViewSockets".equals(activeView)) {
+                        UtilsViews.setViewAnimating("ViewSockets");
+                    }
+                    ctrlSockets.receiveMessage(msgObj);
+                    break;
+
+
+
+// --------------------------------------------------------------------------------------------------------
+
+
+
+                }
+
+
+            }
+            
         });
+    }
+
+    // Funció que imprimeix els números del countdown i canvia la vista a la del joc quan d'arriba a 0
+    private static void handleCountdown(int value) {
+        if (value == 0) {
+            // Cambiar a vista de juego cuando termina la cuenta atrás
+            UtilsViews.setViewAnimating("ViewGame");
+        }
+        // Mostrem el countdown per consola -> CANVIAR: vista countdown
+        System.out.println("Countdown: " + value);
     }
 
     private static void wsError(String response) {

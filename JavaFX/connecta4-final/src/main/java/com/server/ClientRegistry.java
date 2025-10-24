@@ -1,8 +1,11 @@
 package com.server;
 
+import com.shared.ClientData;
+
 import org.java_websocket.WebSocket;
 import org.json.JSONArray;
 
+import java.util.Set; 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,6 +20,9 @@ final class ClientRegistry {
     /** Mapa de nombres de usuario a sockets. */
     private final Map<String, WebSocket> byName = new ConcurrentHashMap<>();
 
+    // Mapa per les dades dels clients en el joc
+    private final Map<String, ClientData> clientsData = new ConcurrentHashMap<>();
+
     /**
      * Crea un nuevo registro
      */
@@ -30,7 +36,25 @@ final class ClientRegistry {
     String add(WebSocket socket, String userName) {
         bySocket.put(socket, userName);
         byName.put(userName, socket);
+
+        // Creem dades del client
+        clientsData.put(userName, new ClientData(userName, "none"));
+
         return userName; // Devuelve el mismo nombre que recibió
+    }
+
+    // Devolver userNames
+    public Set<String> getAllUserNames() {
+        return byName.keySet();
+    }
+
+    // Accedir a les dades dels clients
+    ClientData getClientData(String userName) {
+        return clientsData.get(userName);
+    }
+
+    void updateClientData(String userName, ClientData data) {
+        clientsData.put(userName, data);
     }
 
     /**
