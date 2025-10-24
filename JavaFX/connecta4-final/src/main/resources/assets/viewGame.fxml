@@ -73,30 +73,30 @@
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                <children>
                       <VBox alignment="CENTER" spacing="20">
-                     <Circle fx:id="azul1" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                     <Circle fx:id="azul2" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                     <Circle fx:id="azul3" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                     <Circle fx:id="azul4" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                     <Circle fx:id="azul5" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                     <Circle fx:id="azul6" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                     <Circle fx:id="azul7" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                     <Circle fx:id="azul8" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                     <Circle fx:id="azul9" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                     <Circle fx:id="azul10" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul1" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul2" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul3" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul4" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul5" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul6" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul7" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul8" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul9" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                     <Circle fx:id="azul10" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
                       </VBox>
                   <VBox alignment="CENTER" prefHeight="640.0" prefWidth="56.0" spacing="20">
                      <children>
-                        <Circle fx:id="azul11" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                        <Circle fx:id="azul12" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                        <Circle fx:id="azul13" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                        <Circle fx:id="azul14" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                        <Circle fx:id="azul15" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                        <Circle fx:id="azul16" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                        <Circle fx:id="azul17" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                        <Circle fx:id="azul18" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                        <Circle fx:id="azul19" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                        <Circle fx:id="azul20" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
-                        <Circle fx:id="azul21" fill="BLUE" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul11" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul12" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul13" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul14" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul15" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul16" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul17" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul18" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul19" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul20" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
+                        <Circle fx:id="azul21" fill="YELLOW" onMouseDragged="#arrastrarFicha" onMousePressed="#iniciarArrastreFicha" onMouseReleased="#soltarFicha" radius="20.0" />
                      </children>
                   </VBox>
                </children>

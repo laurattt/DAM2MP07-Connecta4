@@ -267,8 +267,12 @@ public class CtrlGame implements Initializable {
         String turnPlayer = game.optString("turn", "");
         String myName = Main.ctrlConfig.txtName.getText();
         
-        return turnPlayer.equals(myName) && 
+        boolean myTurn = turnPlayer.equals(myName) && 
             "playing".equals(game.optString("status", ""));
+
+        System.out.println("Verificación turno -> Mi nombre: " + myName + ". Turno actual: " + turnPlayer + ". Estado: " + game.optString("status","" + ". Es mi turno: " + myTurn));
+
+        return myTurn;
     }
 
     // Método para recibir serverData del servidor
@@ -716,9 +720,21 @@ public class CtrlGame implements Initializable {
     private void drawOtherPlayerMouse() {
         for (ClientData client : gameClients) {
             if (!client.name.equals(Main.ctrlConfig.txtName.getText())) {
-                // Dibujar cursor del oponente
+                // Obtener la posición del canvas en la pantalla
+                javafx.geometry.Bounds canvasBounds = canvas.getBoundsInLocal();
+                javafx.geometry.Point2D canvasScenePos = canvas.localToScene(0, 0);
+                
+                // Calcular la posición relativa al canvas
+                double relativeX = client.mouseX - canvasScenePos.getX();
+                double relativeY = client.mouseY - canvasScenePos.getY();
+                
                 gc.setFill(getColor(client.color));
-                gc.fillOval(client.mouseX - 5, client.mouseY - 5, 10, 10);
+                gc.fillOval(relativeX - 5, relativeY - 5, 10, 10);
+                    
+                // Dibujar un pequeño indicador de quién es
+                gc.setFill(Color.BLACK);
+                gc.fillText(client.name, relativeX + 10, relativeY - 10);
+                
             }
         }
     }
@@ -727,9 +743,6 @@ public class CtrlGame implements Initializable {
         switch (colorName.toUpperCase()) {
             case "RED": return Color.RED;
             case "YELLOW": return Color.YELLOW;
-            case "BLUE": return Color.BLUE;
-            case "GREEN": return Color.GREEN;
-            case "GRAY": return Color.GRAY;
             default: return Color.LIGHTGRAY;
         }
     }
