@@ -54,7 +54,7 @@ public class CtrlConfig implements Initializable {
     @FXML
     private void setConfigProxmox() {
         txtProtocol.setText("wss");
-        txtHost.setText("user.ieti.site");
+        txtHost.setText("mdominguezaguirre.ieti.site");
         txtPort.setText("443");
         if (txtName.getText() == null || txtName.getText().trim().isEmpty()) {
             txtName.setPromptText("Ingresa tu nombre aquí");
